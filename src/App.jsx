@@ -39,13 +39,27 @@ function App() {
     // Get the list of all months on which we will make the calculations
     let months = get_months_between_years(thisYear, endYear)
 
+    let result = []
+    let currentCapital
+
+    // Loop each months
     months.forEach((month, index) => {
-      console.log(month, index)
+
+      // Case first itteration
+      if (index === 0) {
+        result.push({
+          
+        })
+      }
+
+      // Current capital
+      currentCapital = 
+
     })
 
-    
+
   }, [state.birthYear])
-  
+
   console.log(state)
 
   return (

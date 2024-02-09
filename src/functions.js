@@ -9,3 +9,7 @@ export function get_months_between_years(startYear, endYear) {
 
     return months
 }
+
+export function monthData(data) {
+    
+}
