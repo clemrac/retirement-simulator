@@ -15,10 +15,11 @@ function App() {
 
   const [state, setState] = useState(INITIAL_DATA)
   const [params, setParams] = useState(INITIAL_DATA)
+  const [isLoading, setIsLoading] = useState(false)
 
   const onChange = useCallback((e) => {
     let name = e.target.name
-    let value = Number.parseInt(e.target.value)
+    let value = e.target.value ? Number.parseInt(e.target.value) : ''
 
     setParams(prevState => ({
       ...prevState,
@@ -27,15 +28,16 @@ function App() {
   }, [])
 
   const onApplyParams = useCallback(() => {
+    // Start loader
+    setIsLoading(true)
+
     setState({ ...params })
   }, [params])
 
   const monthlyCalculation = useMemo(() => {
 
-    console.log('memo !')
-
     let thisYear = (new Date()).getFullYear()
-    let endYear = state.birthYear + 100
+    let endYear = state.birthYear + state.lifespan
 
     // Get the list of all months on which we will make the calculations
     let months = get_months_between_years(thisYear, endYear)
@@ -98,12 +100,18 @@ function App() {
     })
 
     return result
-  }, [state.birthYear, state.inflation, state.initialCapital, state.interestRate, state.monthlySaving, state.retirementAge, state.retirementPension])
+  }, [state.birthYear, state.inflation, state.initialCapital, state.interestRate, state.lifespan, state.monthlySaving, state.retirementAge, state.retirementPension])
+
+  // 
+  useEffect(() => {
+    if (isLoading) setIsLoading(false)
+  }, [isLoading, monthlyCalculation])
 
   return (
     <div id='app'>
 
       <Parameters
+        isLoading={isLoading}
         params={params}
         onApplyParams={onApplyParams}
         onChange={onChange}

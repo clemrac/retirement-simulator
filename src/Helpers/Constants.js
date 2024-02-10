@@ -6,4 +6,5 @@ export const INITIAL_DATA = {
     inflation: 4,
     interestRate: 8,
     retirementPension: 3000,
+    lifespan: 95
 }

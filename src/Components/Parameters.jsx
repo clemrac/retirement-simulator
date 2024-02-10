@@ -1,10 +1,15 @@
-import { Button, TextField } from "@mui/material"
+/* eslint-disable react/prop-types */
+import { TextField } from "@mui/material"
+import LoadingButton from "./LoadingButton"
 
 export default function Parameters({
     params,
+    isLoading,
     onChange,
     onApplyParams
 }) {
+
+    console.log(isLoading)
 
     return (
         <div id='parameters'>
@@ -17,6 +22,16 @@ export default function Parameters({
                     variant="outlined"
                     type='number'
                     value={params.birthYear}
+                    onChange={onChange}
+                />
+
+                {/* Lifespan */}
+                <TextField
+                    name="lifespan"
+                    label="Lifespan"
+                    variant="outlined"
+                    type='number'
+                    value={params.lifespan}
                     onChange={onChange}
                 />
             </div>
@@ -89,7 +104,14 @@ export default function Parameters({
                     value={params.retirementPension}
                     onChange={onChange}
                 />
-                <Button variant="contained" onClick={onApplyParams}>Calculate</Button>
+
+                {/* Calculate button */}
+                <LoadingButton
+                    txt='Calculate'
+                    isLoading={isLoading}
+
+                    onClick={onApplyParams}
+                />
             </div>
         </div>
     )
