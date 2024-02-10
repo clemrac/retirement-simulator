@@ -1,5 +1,19 @@
 #app {
   display: flex;
   flex-direction: column;
+
   gap: 12px;
+}
+
+.inputRow {
+  display: flex;
+
+  gap: 12px;
+}
+
+#parameters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
 }

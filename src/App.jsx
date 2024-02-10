@@ -1,37 +1,38 @@
-import { TextField } from '@mui/material'
 import './App.css'
-import { useCallback, useMemo, useState } from 'react'
-import { get_months_between_years } from './functions'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { addInflationToValue, calculateMonthProfit, deductPensionFromCapital, getCapitalGrowth, getCurrentPension, getNewCapital, getNewMonthlySaving, get_months_between_years, incrementAge, monthData } from './Helpers/functions'
+import ResultTable from './Components/Table'
+import { INITIAL_DATA } from './Helpers/Constants'
+import Parameters from './Components/Parameters'
 
 /**
  * Need to include salary inflation in monthly savings (every years)
+ * As well as increase in monthly savings with inflation and salary increase
  * 
  */
 
 function App() {
 
-  const [state, setState] = useState({
-    birthYear: 1995,
-    retirementAge: 65,
-    initialCapital: 0,
-    monthlySaving: 400,
-    inflation: 3,
-    interestRate: 8,
-    retirementPension: 3000,
-    retirementExternalIncomes: 1000
-  })
+  const [state, setState] = useState(INITIAL_DATA)
+  const [params, setParams] = useState(INITIAL_DATA)
 
   const onChange = useCallback((e) => {
     let name = e.target.name
-    let value = e.target.value
+    let value = Number.parseInt(e.target.value)
 
-    setState(prevState => ({
+    setParams(prevState => ({
       ...prevState,
       [name]: value
     }))
   }, [])
 
+  const onApplyParams = useCallback(() => {
+    setState({ ...params })
+  }, [params])
+
   const monthlyCalculation = useMemo(() => {
+
+    console.log('memo !')
 
     let thisYear = (new Date()).getFullYear()
     let endYear = state.birthYear + 100
@@ -40,111 +41,77 @@ function App() {
     let months = get_months_between_years(thisYear, endYear)
 
     let result = []
-    let currentCapital
+    let currentCapital = state.initialCapital
+    let monthResult
+    let currentAge = thisYear - state.birthYear
+    let currentMonthlySaving = state.monthlySaving
+    let monthProfit = 0
+    let monthlyInterestRate = (state.interestRate / 100) / 12
+    let retirementPensionWithInflation = state.retirementPension
+    let currentMonthlyPension
+    let capitalGrowth
 
-    // Loop each months
+    // Loop on each months
     months.forEach((month, index) => {
 
-      // Case first itteration
-      if (index === 0) {
-        result.push({
-          
-        })
-      }
+      // Here we are at the beginning of the month
 
-      // Current capital
-      currentCapital = 
+      // If I am retired, let's deduct my pension
+      currentMonthlyPension = getCurrentPension(currentAge, state.retirementAge, retirementPensionWithInflation)
+      currentCapital = deductPensionFromCapital(currentMonthlyPension, currentCapital)
 
+      // Calculate capital growth
+      capitalGrowth = getCapitalGrowth(currentCapital, result, index)
+
+      // We count what we have to this day with the profit of last month
+      // And put the data in the result object
+      monthResult = monthData({
+        date: month,
+        capital: currentCapital,
+        age: currentAge,
+        monthlySaving: currentMonthlySaving,
+        monthProfit: monthProfit,
+        capitalGrowth,
+        pension: currentMonthlyPension
+      })
+
+      // Add this month result to final result
+      result.push(monthResult)
+
+      // Time passes, we are now at the end of the month
+      // Take every parameters into account
+
+      // Calculate saving profit for this month
+      monthProfit = calculateMonthProfit(currentCapital, monthlyInterestRate)
+
+      // Add profit and monthly savings to capital
+      currentCapital = getNewCapital(currentCapital, monthProfit, currentMonthlySaving)
+
+      // Increment age
+      currentAge = incrementAge(currentAge, month)
+
+      // Increment monthly savings
+      currentMonthlySaving = getNewMonthlySaving(month, currentMonthlySaving, state.inflation, currentAge, state.retirementAge)
+
+      // Add inflation to monthly pension
+      retirementPensionWithInflation = addInflationToValue(retirementPensionWithInflation, state.inflation, true)
     })
 
-
-  }, [state.birthYear])
-
-  console.log(state)
+    return result
+  }, [state.birthYear, state.inflation, state.initialCapital, state.interestRate, state.monthlySaving, state.retirementAge, state.retirementPension])
 
   return (
     <div id='app'>
 
-      {/* BIRTH YEAR */}
-      <TextField
-        name="birthYear"
-        label="Birth year"
-        variant="outlined"
-        type='number'
-        value={state.birthYear}
+      <Parameters
+        params={params}
+        onApplyParams={onApplyParams}
         onChange={onChange}
       />
 
-      {/* RETIREMENT AGE */}
-      <TextField
-        name="retirementAge"
-        label="Retirement Age"
-        variant="outlined"
-        type='number'
-        value={state.retirementAge}
-        onChange={onChange}
+      <ResultTable
+        data={monthlyCalculation}
       />
-
-      {/* INITIAL CAPITAL */}
-      <TextField
-        name="initialCapital"
-        label="Initial capital"
-        variant="outlined"
-        type='number'
-        value={state.initialCapital}
-        onChange={onChange}
-      />
-
-      {/* MONTHLY SAVING */}
-      <TextField
-        name="monthlySaving"
-        label="Monthly savings"
-        variant="outlined"
-        type='number'
-        value={state.monthlySaving}
-        onChange={onChange}
-      />
-
-      {/* INFLATION */}
-      <TextField
-        name="inflation"
-        label="Inflation (%)"
-        variant="outlined"
-        type='number'
-        value={state.inflation}
-        onChange={onChange}
-      />
-
-      {/* INTEREST RATE */}
-      <TextField
-        name="interestRate"
-        label="Interest rate (%)"
-        variant="outlined"
-        type='number'
-        value={state.interestRate}
-        onChange={onChange}
-      />
-
-      {/* RETIREMENT PENSION */}
-      <TextField
-        name="retirementPension"
-        label="Retirement pension (Todays value)"
-        variant="outlined"
-        type='number'
-        value={state.retirementPension}
-        onChange={onChange}
-      />
-
-      {/* RETIREMENT EXTERNAL INCOMES */}
-      <TextField
-        name="retirementExternalIncomes"
-        label="Retirement external incomes"
-        variant="outlined"
-        type='number'
-        value={state.retirementExternalIncomes}
-        onChange={onChange}
-      />
-
 
     </div>
   )
