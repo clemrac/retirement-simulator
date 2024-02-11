@@ -27,7 +27,7 @@ export function monthData({
         monthlySaving,
         monthProfit,
         capitalGrowth,
-        pension
+        pension,
     }
 }
 
@@ -53,21 +53,27 @@ export function getNewCapital(currentCapital, profit, savings) {
 // Each year, take into account the increase in salary -> More saving capabilities
 // Increase just by inflation
 // Will increase every end of december
-export function getNewMonthlySaving(currentDate, currentMonthlySaving, inflation, currentAge, retirementAge) {
+export function getNewMonthlySaving(
+    currentDate,
+    currentMonthlySaving,
+    inflation,
+    currentAge,
+    retirementAge
+) {
     // If retired, no more savings
     if (currentAge >= retirementAge) return 0
 
     let currentMonth = currentDate.getMonth()
 
     // End of december, inc saving by inflation
-    if (currentMonth === 11) return addInflationToValue(currentMonthlySaving, inflation)
+    if (currentMonth === 11)
+        return addInflationToValue(currentMonthlySaving, inflation)
 
     // Else, return current saving
     return currentMonthlySaving
 }
 
 export function getCurrentPension(age, retirementAge, currentMonthlyPension) {
-
     // If not retired, no pension
     if (age < retirementAge) return 0
 
@@ -84,12 +90,14 @@ export function addInflationToValue(value, inflation, isMonthly) {
     return value * (1 + effectiveInflation)
 }
 
-export function deductPensionFromCapital(currentMonthlyPension, currentCapital) {
+export function deductPensionFromCapital(
+    currentMonthlyPension,
+    currentCapital
+) {
     return currentCapital - currentMonthlyPension
 }
 
 export function getCapitalGrowth(currentCapital, currentResult, currentIndex) {
-
     // if first entry, no growth
     if (currentIndex === 0) return 0
 
@@ -102,22 +110,19 @@ export function getCapitalGrowth(currentCapital, currentResult, currentIndex) {
 
 export function formatDate(date) {
     const options = {
-        year: 'numeric',
-        month: 'long',
+        year: "numeric",
+        month: "long",
     }
 
     return date.toLocaleDateString(undefined, options)
 }
 
 export function formatMoneyAmount(amount) {
-    let formatedAmount = new Intl.NumberFormat(
-        undefined,
-        {
-            style: 'currency',
-            currency: 'EUR',
-            maximumFractionDigits: 0,
-        }
-    ).format(amount)
+    let formatedAmount = new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency: "EUR",
+        maximumFractionDigits: 0,
+    }).format(amount)
 
     return formatedAmount
 }
@@ -132,8 +137,7 @@ export function getMonthlyCalculation({
     retirementAge,
     retirementPension,
 }) {
-
-    let thisYear = (new Date()).getFullYear()
+    let thisYear = new Date().getFullYear()
     let endYear = birthYear + lifespan
 
     // Get the list of all months on which we will make the calculations
@@ -145,19 +149,25 @@ export function getMonthlyCalculation({
     let currentAge = thisYear - birthYear
     let currentMonthlySaving = monthlySaving
     let monthProfit = 0
-    let monthlyInterestRate = (interestRate / 100) / 12
+    let monthlyInterestRate = interestRate / 100 / 12
     let retirementPensionWithInflation = retirementPension
     let currentMonthlyPension
     let capitalGrowth
 
     // Loop on each months
     months.forEach((month, index) => {
-
         // Here we are at the beginning of the month
 
         // If I am retired, let's deduct my pension
-        currentMonthlyPension = getCurrentPension(currentAge, retirementAge, retirementPensionWithInflation)
-        currentCapital = deductPensionFromCapital(currentMonthlyPension, currentCapital)
+        currentMonthlyPension = getCurrentPension(
+            currentAge,
+            retirementAge,
+            retirementPensionWithInflation
+        )
+        currentCapital = deductPensionFromCapital(
+            currentMonthlyPension,
+            currentCapital
+        )
 
         // Calculate capital growth
         capitalGrowth = getCapitalGrowth(currentCapital, result, index)
@@ -171,7 +181,7 @@ export function getMonthlyCalculation({
             monthlySaving: currentMonthlySaving,
             monthProfit: monthProfit,
             capitalGrowth,
-            pension: currentMonthlyPension
+            pension: currentMonthlyPension,
         })
 
         // Add this month result to final result
@@ -184,16 +194,30 @@ export function getMonthlyCalculation({
         monthProfit = calculateMonthProfit(currentCapital, monthlyInterestRate)
 
         // Add profit and monthly savings to capital
-        currentCapital = getNewCapital(currentCapital, monthProfit, currentMonthlySaving)
+        currentCapital = getNewCapital(
+            currentCapital,
+            monthProfit,
+            currentMonthlySaving
+        )
 
         // Increment age
         currentAge = incrementAge(currentAge, month)
 
         // Increment monthly savings
-        currentMonthlySaving = getNewMonthlySaving(month, currentMonthlySaving, inflation, currentAge, retirementAge)
+        currentMonthlySaving = getNewMonthlySaving(
+            month,
+            currentMonthlySaving,
+            inflation,
+            currentAge,
+            retirementAge
+        )
 
         // Add inflation to monthly pension
-        retirementPensionWithInflation = addInflationToValue(retirementPensionWithInflation, inflation, true)
+        retirementPensionWithInflation = addInflationToValue(
+            retirementPensionWithInflation,
+            inflation,
+            true
+        )
     })
 
     return result
@@ -203,10 +227,10 @@ export function formatTableCellValue(row, column) {
     let label = row[column.dataKey]
 
     switch (column.type) {
-        case 'currency':
+        case "currency":
             label = formatMoneyAmount(label)
             break
-        case 'date':
+        case "date":
             label = formatDate(label)
             break
         default:
@@ -214,4 +238,16 @@ export function formatTableCellValue(row, column) {
     }
 
     return label
+}
+
+export function getCurrencySymbol() {
+    return (0)
+        .toLocaleString(undefined, {
+            style: "currency",
+            currency: "EUR",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        })
+        .replace(/\d/g, "")
+        .trim()
 }

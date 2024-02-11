@@ -1,24 +1,24 @@
 /* eslint-disable react/prop-types */
-import { TextField } from "@mui/material"
-import LoadingButton from "./LoadingButton"
+import { Button, InputAdornment, Stack, TextField } from "@mui/material"
+import CurrencyInputSymbol from "./CurrencyInputSymbol"
+import { COLORS } from "../Helpers/Style"
 
-export default function Parameters({
-    params,
-    onChange,
-    onApplyParams
-}) {
+const INPUT_WIDTH = 200
+
+export default function Parameters({ params, onChange, onApplyParams }) {
 
     return (
-        <div id='parameters'>
+        <Stack spacing={2} sx={{ pt: 5 }}>
             {/* DATES */}
-            <div className='inputRow'>
+            <Stack spacing={2} direction={"row"}>
                 {/* Birth year */}
                 <TextField
                     name="birthYear"
                     label="Birth year"
                     variant="outlined"
-                    
+                    sx={{ width: INPUT_WIDTH }}
                     value={params.birthYear}
+
                     onChange={onChange}
                 />
 
@@ -26,21 +26,27 @@ export default function Parameters({
                 <TextField
                     name="lifespan"
                     label="Lifespan"
+                    sx={{ width: INPUT_WIDTH }}
                     variant="outlined"
                     value={params.lifespan}
+
                     onChange={onChange}
                 />
-            </div>
-
+            </Stack>
 
             {/* INVESTMENT */}
-            <div className='inputRow'>
+            <Stack spacing={2} direction={"row"}>
                 {/* Initial capital */}
                 <TextField
                     name="initialCapital"
                     label="Initial capital"
+                    sx={{ width: INPUT_WIDTH }}
                     variant="outlined"
+                    InputProps={{
+                        startAdornment: <CurrencyInputSymbol />,
+                    }}
                     value={params.initialCapital}
+
                     onChange={onChange}
                 />
 
@@ -48,60 +54,86 @@ export default function Parameters({
                 <TextField
                     name="monthlySaving"
                     label="Monthly savings"
+                    sx={{ width: INPUT_WIDTH }}
                     variant="outlined"
+                    InputProps={{
+                        startAdornment: <CurrencyInputSymbol />,
+                    }}
                     value={params.monthlySaving}
                     onChange={onChange}
                 />
-            </div>
+            </Stack>
 
             {/* GROWTH */}
-            <div className='inputRow'>
+            <Stack spacing={2} direction={"row"}>
                 {/* Inflation */}
                 <TextField
                     name="inflation"
-                    label="Inflation (%)"
+                    label="Inflation"
+                    sx={{ width: INPUT_WIDTH }}
                     variant="outlined"
                     value={params.inflation}
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                    }}
+
                     onChange={onChange}
                 />
 
                 {/* Interest rate */}
                 <TextField
                     name="interestRate"
-                    label="Interest rate (%)"
+                    label="Interest rate"
+                    sx={{ width: INPUT_WIDTH }}
                     variant="outlined"
                     value={params.interestRate}
+                    InputProps={{
+                        startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                    }}
+
                     onChange={onChange}
                 />
-            </div>
+            </Stack>
 
             {/* RETIREMENT */}
-            <div className='inputRow'>
+            <Stack spacing={2} direction={"row"}>
                 {/* Retirement age */}
                 <TextField
                     name="retirementAge"
                     label="Retirement Age"
+                    sx={{ width: INPUT_WIDTH }}
                     variant="outlined"
                     value={params.retirementAge}
+
                     onChange={onChange}
                 />
 
-                {/* RETIREMENT PENSION */}
+                {/* Retirement pension */}
                 <TextField
                     name="retirementPension"
-                    label="Retirement pension (Todays value)"
+                    label="Desired retirement pension"
+                    sx={{ width: INPUT_WIDTH }}
                     variant="outlined"
+                    InputProps={{
+                        startAdornment: <CurrencyInputSymbol />,
+                    }}
                     value={params.retirementPension}
                     onChange={onChange}
                 />
+            </Stack>
 
-                {/* Calculate button */}
-                <LoadingButton
-                    txt='Calculate'
+            {/* Calculate button */}
+            <Button
+                variant="contained"
+                disabled={!params.isParamsUpdated}
+                sx={{
+                    backgroundColor: COLORS.primary
+                }}
 
-                    onClick={onApplyParams}
-                />
-            </div>
-        </div>
+                onClick={onApplyParams}
+            >
+                Calculate
+            </Button>
+        </Stack>
     )
 }
