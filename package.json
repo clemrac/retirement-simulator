@@ -14,8 +14,11 @@
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
     "@mui/material": "^5.15.9",
+    "@mui/x-charts": "^6.19.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-virtuoso": "^4.6.3",
+    "react-window": "^1.8.10"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",

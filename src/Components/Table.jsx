@@ -1,43 +1,108 @@
+/* eslint-disable react/display-name */
 /* eslint-disable react/prop-types */
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
-import { memo } from "react"
-import { formatDate, formatMoneyAmount } from "../Helpers/functions"
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material"
+import React, { memo } from "react"
+import { TableVirtuoso } from "react-virtuoso"
+import { formatTableCellValue } from "../Helpers/functions"
+
+const VirtuosoTableComponents = {
+    Scroller: React.forwardRef((props, ref) => (
+        <TableContainer component={Paper} {...props} ref={ref} />
+    )),
+    Table: (props) => (
+        <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />
+    ),
+    TableHead,
+    TableRow: ({ ...props }) => <TableRow {...props} />,
+    TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
+}
+
+const columns = [
+    {
+        label: 'Date',
+        dataKey: 'date',
+        type: 'date'
+    },
+    {
+        label: 'Year',
+        dataKey: 'year',
+        type: 'number',
+    },
+    {
+        label: 'Age',
+        dataKey: 'age',
+        type: 'number',
+    },
+    {
+        label: 'Capital',
+        dataKey: 'capital',
+        type: 'currency',
+    },
+    {
+        label: 'Month profit',
+        dataKey: 'monthProfit',
+        type: 'currency',
+    },
+    {
+        label: 'Month saving',
+        dataKey: 'monthlySaving',
+        type: 'currency',
+    },
+    {
+        label: 'Capital growth',
+        dataKey: 'capitalGrowth',
+        type: 'currency',
+    },
+    {
+        label: 'Pension',
+        dataKey: 'pension',
+        type: 'currency',
+    },
+]
+
+function fixedHeaderContent() {
+    return (
+        <TableRow>
+            {columns.map((column) => (
+                <TableCell
+                    key={column.dataKey}
+                    variant="head"
+                    style={{ width: column.width }}
+                    sx={{
+                        backgroundColor: 'background.paper',
+                    }}
+                >
+                    {column.label}
+                </TableCell>
+            ))}
+        </TableRow>
+    )
+}
+
+function rowContent(_index, row) {
+    return (
+        <React.Fragment>
+            {columns.map((column) => (
+                <TableCell
+                    key={column.dataKey}
+                >
+                    {formatTableCellValue(row, column)}
+                </TableCell>
+            ))}
+        </React.Fragment>
+    )
+}
 
 export default memo(function ResultTable({ data }) {
 
     return (
-        <TableContainer sx={{ maxHeight: 600 }}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table" stickyHeader>
-                <TableHead>
-                    <TableRow>
-                        <TableCell align="right">Date</TableCell>
-                        <TableCell align="right">Year</TableCell>
-                        <TableCell align="right">Age</TableCell>
-                        <TableCell align="right">Capital</TableCell>
-                        <TableCell align="right">Month profit</TableCell>
-                        <TableCell align="right">Month saving</TableCell>
-                        <TableCell align="right">Capital growth</TableCell>
-                        <TableCell align="right">Pension</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {data.map((row) => (
-                        <TableRow
-                            key={row.date}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                            <TableCell component="th" scope="row" align="right">{formatDate(row.date)}</TableCell>
-                            <TableCell align="right">{row.year}</TableCell>
-                            <TableCell align="right">{row.age}</TableCell>
-                            <TableCell align="right">{formatMoneyAmount(row.capital)}</TableCell>
-                            <TableCell align="right">{formatMoneyAmount(row.monthProfit)}</TableCell>
-                            <TableCell align="right">{formatMoneyAmount(row.monthlySaving)}</TableCell>
-                            <TableCell align="right">{formatMoneyAmount(row.capitalGrowth)}</TableCell>
-                            <TableCell align="right">{formatMoneyAmount(row.pension)}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Paper style={{ height: 400, width: '100%' }}>
+            <TableVirtuoso
+                data={data}
+                components={VirtuosoTableComponents}
+                fixedHeaderContent={fixedHeaderContent}
+                itemContent={rowContent}
+            />
+        </Paper>
     )
 })

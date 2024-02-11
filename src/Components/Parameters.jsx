@@ -4,12 +4,9 @@ import LoadingButton from "./LoadingButton"
 
 export default function Parameters({
     params,
-    isLoading,
     onChange,
     onApplyParams
 }) {
-
-    console.log(isLoading)
 
     return (
         <div id='parameters'>
@@ -20,7 +17,7 @@ export default function Parameters({
                     name="birthYear"
                     label="Birth year"
                     variant="outlined"
-                    type='number'
+                    
                     value={params.birthYear}
                     onChange={onChange}
                 />
@@ -30,7 +27,6 @@ export default function Parameters({
                     name="lifespan"
                     label="Lifespan"
                     variant="outlined"
-                    type='number'
                     value={params.lifespan}
                     onChange={onChange}
                 />
@@ -44,7 +40,6 @@ export default function Parameters({
                     name="initialCapital"
                     label="Initial capital"
                     variant="outlined"
-                    type='number'
                     value={params.initialCapital}
                     onChange={onChange}
                 />
@@ -54,7 +49,6 @@ export default function Parameters({
                     name="monthlySaving"
                     label="Monthly savings"
                     variant="outlined"
-                    type='number'
                     value={params.monthlySaving}
                     onChange={onChange}
                 />
@@ -67,7 +61,6 @@ export default function Parameters({
                     name="inflation"
                     label="Inflation (%)"
                     variant="outlined"
-                    type='number'
                     value={params.inflation}
                     onChange={onChange}
                 />
@@ -77,7 +70,6 @@ export default function Parameters({
                     name="interestRate"
                     label="Interest rate (%)"
                     variant="outlined"
-                    type='number'
                     value={params.interestRate}
                     onChange={onChange}
                 />
@@ -90,7 +82,6 @@ export default function Parameters({
                     name="retirementAge"
                     label="Retirement Age"
                     variant="outlined"
-                    type='number'
                     value={params.retirementAge}
                     onChange={onChange}
                 />
@@ -100,7 +91,6 @@ export default function Parameters({
                     name="retirementPension"
                     label="Retirement pension (Todays value)"
                     variant="outlined"
-                    type='number'
                     value={params.retirementPension}
                     onChange={onChange}
                 />
@@ -108,7 +98,6 @@ export default function Parameters({
                 {/* Calculate button */}
                 <LoadingButton
                     txt='Calculate'
-                    isLoading={isLoading}
 
                     onClick={onApplyParams}
                 />

@@ -121,3 +121,97 @@ export function formatMoneyAmount(amount) {
 
     return formatedAmount
 }
+
+export function getMonthlyCalculation({
+    birthYear,
+    inflation,
+    initialCapital,
+    interestRate,
+    lifespan,
+    monthlySaving,
+    retirementAge,
+    retirementPension,
+}) {
+
+    let thisYear = (new Date()).getFullYear()
+    let endYear = birthYear + lifespan
+
+    // Get the list of all months on which we will make the calculations
+    let months = get_months_between_years(thisYear, endYear)
+
+    let result = []
+    let currentCapital = initialCapital
+    let monthResult
+    let currentAge = thisYear - birthYear
+    let currentMonthlySaving = monthlySaving
+    let monthProfit = 0
+    let monthlyInterestRate = (interestRate / 100) / 12
+    let retirementPensionWithInflation = retirementPension
+    let currentMonthlyPension
+    let capitalGrowth
+
+    // Loop on each months
+    months.forEach((month, index) => {
+
+        // Here we are at the beginning of the month
+
+        // If I am retired, let's deduct my pension
+        currentMonthlyPension = getCurrentPension(currentAge, retirementAge, retirementPensionWithInflation)
+        currentCapital = deductPensionFromCapital(currentMonthlyPension, currentCapital)
+
+        // Calculate capital growth
+        capitalGrowth = getCapitalGrowth(currentCapital, result, index)
+
+        // We count what we have to this day with the profit of last month
+        // And put the data in the result object
+        monthResult = monthData({
+            date: month,
+            capital: currentCapital,
+            age: currentAge,
+            monthlySaving: currentMonthlySaving,
+            monthProfit: monthProfit,
+            capitalGrowth,
+            pension: currentMonthlyPension
+        })
+
+        // Add this month result to final result
+        result.push(monthResult)
+
+        // Time passes, we are now at the end of the month
+        // Take every parameters into account
+
+        // Calculate saving profit for this month
+        monthProfit = calculateMonthProfit(currentCapital, monthlyInterestRate)
+
+        // Add profit and monthly savings to capital
+        currentCapital = getNewCapital(currentCapital, monthProfit, currentMonthlySaving)
+
+        // Increment age
+        currentAge = incrementAge(currentAge, month)
+
+        // Increment monthly savings
+        currentMonthlySaving = getNewMonthlySaving(month, currentMonthlySaving, inflation, currentAge, retirementAge)
+
+        // Add inflation to monthly pension
+        retirementPensionWithInflation = addInflationToValue(retirementPensionWithInflation, inflation, true)
+    })
+
+    return result
+}
+
+export function formatTableCellValue(row, column) {
+    let label = row[column.dataKey]
+
+    switch (column.type) {
+        case 'currency':
+            label = formatMoneyAmount(label)
+            break
+        case 'date':
+            label = formatDate(label)
+            break
+        default:
+            break
+    }
+
+    return label
+}

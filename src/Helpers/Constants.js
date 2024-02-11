@@ -1,4 +1,4 @@
-export const INITIAL_DATA = {
+export const INITIAL_PARAMS = {
     birthYear: 1995,
     retirementAge: 65,
     initialCapital: 5900,
