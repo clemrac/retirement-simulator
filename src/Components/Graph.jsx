@@ -2,6 +2,7 @@
 import { LineChart } from "@mui/x-charts"
 import { memo } from "react"
 import { COLORS } from "../Helpers/Style"
+import { Box } from "@mui/material"
 
 export default memo(function Graph({ data }) {
     let years = []
@@ -23,28 +24,29 @@ export default memo(function Graph({ data }) {
     capitals = [...capitals].reverse()
 
     return (
-        <LineChart
-            xAxis={[
-                {
-                    id: "Years",
-                    data: years,
-                    label: "Year",
-                },
-            ]}
-            series={[
-                {
-                    id: "Capitals",
-                    label: "Capital",
-                    data: capitals,
-                    stack: "total",
-                    area: true,
-                    showMark: false,
-                    color: COLORS.primaryLight
-                },
-            ]}
-            width={600}
-            height={400}
-            margin={{ left: 70 }}
-        />
+        <Box sx={{ flex: 1, minWidth: 600 }}>
+            <LineChart
+                xAxis={[
+                    {
+                        id: "Years",
+                        data: years,
+                        label: "Year",
+                    },
+                ]}
+                series={[
+                    {
+                        id: "Capitals",
+                        label: "Capital",
+                        data: capitals,
+                        stack: "total",
+                        area: true,
+                        showMark: false,
+                        color: COLORS.primaryLight,
+                    },
+                ]}
+                height={400}
+                margin={{ left: 70 }}
+            />
+        </Box>
     )
 })

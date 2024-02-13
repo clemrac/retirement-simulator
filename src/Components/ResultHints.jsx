@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material"
+import { Alert, Stack } from "@mui/material"
 import { formatMoneyAmount } from "../Helpers/functions"
 
 /* eslint-disable react/prop-types */
@@ -17,24 +17,17 @@ export default function ResultHints({ data }) {
     })
 
     return (
-        <Stack
-            sx={{
-                backgroundColor: "lightgrey",
-                borderRadius: 2,
-                p: 2,
-            }}
-        >
+        <Stack>
             {ageNoMoreCapital ? (
-                <Typography variant="body1">
-                    You will run out of capital at age {ageNoMoreCapital}. Your
-                    capital at the end of life is{" "}
-                    {formatMoneyAmount(endOfLifeCapital)}.
-                </Typography>
+                <Alert severity="info">
+                    You will run out of capital at age {ageNoMoreCapital}. <br />
+                    Your capital at the end of life is {formatMoneyAmount(endOfLifeCapital)}.
+                </Alert>
             ) : (
-                <Typography variant="body1" gutterBottom>
+                <Alert severity="info">
                     You will have an excess of capital of{" "}
                     {formatMoneyAmount(endOfLifeCapital)}.
-                </Typography>
+                </Alert>
             )}
         </Stack>
     )

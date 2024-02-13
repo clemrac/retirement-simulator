@@ -7,6 +7,12 @@ const INPUT_WIDTH = 200
 
 export default function Parameters({ params, onChange, onApplyParams }) {
 
+    const onEnterPressed = (event) => {
+        if (event.key === 'Enter') {
+            onApplyParams(event)
+        }
+    }
+
     return (
         <Stack spacing={2} sx={{ pt: 5 }}>
             {/* DATES */}
@@ -20,6 +26,7 @@ export default function Parameters({ params, onChange, onApplyParams }) {
                     value={params.birthYear}
 
                     onChange={onChange}
+                    onKeyDown={onEnterPressed}
                 />
 
                 {/* Lifespan */}
@@ -31,6 +38,7 @@ export default function Parameters({ params, onChange, onApplyParams }) {
                     value={params.lifespan}
 
                     onChange={onChange}
+                    onKeyDown={onEnterPressed}
                 />
             </Stack>
 
@@ -48,6 +56,7 @@ export default function Parameters({ params, onChange, onApplyParams }) {
                     value={params.initialCapital}
 
                     onChange={onChange}
+                    onKeyDown={onEnterPressed}
                 />
 
                 {/* Monthly savings */}
@@ -61,6 +70,7 @@ export default function Parameters({ params, onChange, onApplyParams }) {
                     }}
                     value={params.monthlySaving}
                     onChange={onChange}
+                    onKeyDown={onEnterPressed}
                 />
             </Stack>
 
@@ -78,6 +88,7 @@ export default function Parameters({ params, onChange, onApplyParams }) {
                     }}
 
                     onChange={onChange}
+                    onKeyDown={onEnterPressed}
                 />
 
                 {/* Interest rate */}
@@ -92,6 +103,7 @@ export default function Parameters({ params, onChange, onApplyParams }) {
                     }}
 
                     onChange={onChange}
+                    onKeyDown={onEnterPressed}
                 />
             </Stack>
 
@@ -106,6 +118,7 @@ export default function Parameters({ params, onChange, onApplyParams }) {
                     value={params.retirementAge}
 
                     onChange={onChange}
+                    onKeyDown={onEnterPressed}
                 />
 
                 {/* Retirement pension */}
@@ -119,6 +132,7 @@ export default function Parameters({ params, onChange, onApplyParams }) {
                     }}
                     value={params.retirementPension}
                     onChange={onChange}
+                    onKeyDown={onEnterPressed}
                 />
             </Stack>
 
@@ -127,7 +141,7 @@ export default function Parameters({ params, onChange, onApplyParams }) {
                 variant="contained"
                 disabled={!params.isParamsUpdated}
                 sx={{
-                    backgroundColor: COLORS.primary
+                    backgroundColor: COLORS.primaryLight
                 }}
 
                 onClick={onApplyParams}

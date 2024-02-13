@@ -47,8 +47,8 @@ function App() {
         <Box>
             <AppHeader />
 
-            <Stack sx={{ p: 4 }} spacing={2}>
-                <Stack direction="row" spacing={4}>
+            <Stack sx={{ px: 4, pt: 1 }} spacing={2}>
+                <Stack direction="row" spacing={4} sx={{ flexWrap: 'wrap' }}>
                     <Parameters
                         params={params}
                         onApplyParams={onApplyParams}
