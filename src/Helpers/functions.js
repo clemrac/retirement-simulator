@@ -1,4 +1,5 @@
-export function get_months_between_years(startYear, endYear) {
+// List all the months between 2 dates
+export function getMonthsBetweenYears(startYear, endYear) {
     const months = []
 
     for (let year = startYear; year <= endYear; year++) {
@@ -10,7 +11,8 @@ export function get_months_between_years(startYear, endYear) {
     return months
 }
 
-export function monthData({
+// Month data object with all the values related to one month
+export function monthDataObj({
     date,
     capital,
     age,
@@ -42,17 +44,19 @@ export function incrementAge(currentAge, currentDate) {
     return currentAge
 }
 
+// Add growth to capital every months
 export function calculateMonthProfit(capital, monthlyRate) {
     return capital * monthlyRate
 }
 
+// Add all monthly incomes to capital
 export function getNewCapital(currentCapital, profit, savings) {
     return currentCapital + profit + savings
 }
 
 // Each year, take into account the increase in salary -> More saving capabilities
-// Increase just by inflation
-// Will increase every end of december
+// Increases with inflation
+// Will increase at every end of december (Based on a possible increase of salary)
 export function getNewMonthlySaving(
     currentDate,
     currentMonthlySaving,
@@ -73,6 +77,7 @@ export function getNewMonthlySaving(
     return currentMonthlySaving
 }
 
+// Get the pension amount if retirement age is reached
 export function getCurrentPension(age, retirementAge, currentMonthlyPension) {
     // If not retired, no pension
     if (age < retirementAge) return 0
@@ -81,6 +86,7 @@ export function getCurrentPension(age, retirementAge, currentMonthlyPension) {
     return currentMonthlyPension
 }
 
+// Increase a value by the inflation rate
 export function addInflationToValue(value, inflation, isMonthly) {
     let effectiveInflation = inflation / 100
 
@@ -97,6 +103,7 @@ export function deductPensionFromCapital(
     return currentCapital - currentMonthlyPension
 }
 
+// Get the capital difference between the month at currentIndex and the previous month
 export function getCapitalGrowth(currentCapital, currentResult, currentIndex) {
     // if first entry, no growth
     if (currentIndex === 0) return 0
@@ -108,6 +115,7 @@ export function getCapitalGrowth(currentCapital, currentResult, currentIndex) {
     return currentCapital - previousCapital
 }
 
+// Format data for the table (month YYYY)
 export function formatDate(date) {
     const options = {
         year: "numeric",
@@ -117,6 +125,7 @@ export function formatDate(date) {
     return date.toLocaleDateString(undefined, options)
 }
 
+// Get a money amount in string like '1 123 323 E'
 export function formatMoneyAmount(amount) {
     let formatedAmount = new Intl.NumberFormat(undefined, {
         style: "currency",
@@ -127,6 +136,7 @@ export function formatMoneyAmount(amount) {
     return formatedAmount
 }
 
+// Get the app data to build the table and the curve
 export function getMonthlyCalculation({
     birthYear,
     inflation,
@@ -139,20 +149,19 @@ export function getMonthlyCalculation({
 }) {
     let thisYear = new Date().getFullYear()
     let endYear = birthYear + lifespan
-
-    // Get the list of all months on which we will make the calculations
-    let months = get_months_between_years(thisYear, endYear)
-
     let result = []
-    let currentCapital = initialCapital
     let monthResult
+    let currentCapital = initialCapital
     let currentAge = thisYear - birthYear
     let currentMonthlySaving = monthlySaving
+    let currentMonthlyPension
     let monthProfit = 0
     let monthlyInterestRate = interestRate / 100 / 12
     let retirementPensionWithInflation = retirementPension
-    let currentMonthlyPension
     let capitalGrowth
+
+    // Get the list of all months on which we will make the calculations
+    let months = getMonthsBetweenYears(thisYear, endYear)
 
     // Loop on each months
     months.forEach((month, index) => {
@@ -164,6 +173,7 @@ export function getMonthlyCalculation({
             retirementAge,
             retirementPensionWithInflation
         )
+
         currentCapital = deductPensionFromCapital(
             currentMonthlyPension,
             currentCapital
@@ -172,9 +182,10 @@ export function getMonthlyCalculation({
         // Calculate capital growth
         capitalGrowth = getCapitalGrowth(currentCapital, result, index)
 
-        // We count what we have to this day with the profit of last month
+        // We removed the possible pension and all expenses
+        // Now we can count what we have left to this day with the profit of last month
         // And put the data in the result object
-        monthResult = monthData({
+        monthResult = monthDataObj({
             date: month,
             capital: currentCapital,
             age: currentAge,
@@ -223,6 +234,7 @@ export function getMonthlyCalculation({
     return result
 }
 
+// Foramt the value of the table cells based on their types
 export function formatTableCellValue(row, column) {
     let label = row[column.dataKey]
 
@@ -240,6 +252,7 @@ export function formatTableCellValue(row, column) {
     return label
 }
 
+// Returns the Euro symbol
 export function getCurrencySymbol() {
     return (0)
         .toLocaleString(undefined, {

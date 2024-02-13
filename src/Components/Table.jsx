@@ -18,6 +18,7 @@ import { TableVirtuoso } from "react-virtuoso"
 import { formatTableCellValue } from "../Helpers/functions"
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward"
 
+// Virtuoso virtualized table display
 const VirtuosoTableComponents = {
     Scroller: React.forwardRef((props, ref) => (
         <TableContainer component={Paper} {...props} ref={ref} />
@@ -35,7 +36,7 @@ const VirtuosoTableComponents = {
     )),
 }
 
-const columns = [
+const COLUMNS = [
     {
         label: "Date",
         dataKey: "date",
@@ -78,10 +79,10 @@ const columns = [
     },
 ]
 
-function fixedHeaderContent() {
+function FixedTableHeader() {
     return (
         <TableRow>
-            {columns.map((column) => (
+            {COLUMNS.map((column) => (
                 <TableCell
                     key={column.dataKey}
                     variant="head"
@@ -97,10 +98,10 @@ function fixedHeaderContent() {
     )
 }
 
-function rowContent(_index, row) {
+function CustomTableRow(_index, row) {
     return (
         <React.Fragment>
-            {columns.map((column) => (
+            {COLUMNS.map((column) => (
                 <TableCell key={column.dataKey}>
                     {formatTableCellValue(row, column)}
                 </TableCell>
@@ -124,8 +125,8 @@ export default memo(function ResultTable({ data }) {
                     <TableVirtuoso
                         data={data}
                         components={VirtuosoTableComponents}
-                        fixedHeaderContent={fixedHeaderContent}
-                        itemContent={rowContent}
+                        fixedHeaderContent={FixedTableHeader}
+                        itemContent={CustomTableRow}
                     />
                 </Paper>
             </AccordionDetails>

@@ -11,6 +11,7 @@ export default memo(function Graph({ data }) {
     // Reverse the array to get the last month of each years
     const dataReversed = [...data].reverse()
 
+    // Get one value for each years
     dataReversed.forEach((monthData) => {
         // Check if this year is already included
         if (!years.includes(monthData.year)) {
@@ -19,7 +20,7 @@ export default memo(function Graph({ data }) {
         }
     })
 
-    // Reverse the result to have in sorted by years
+    // Reverse the result again to have it in the correct order
     years = [...years].reverse()
     capitals = [...capitals].reverse()
 

@@ -1,5 +1,5 @@
 import "./App.css"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import ResultTable from "./Components/Table"
 import { INITIAL_PARAMS } from "./Helpers/Constants"
 import Parameters from "./Components/Parameters"
@@ -12,7 +12,6 @@ import AppHeader from "./Components/AppHeader"
 /**
  * Need to include salary inflation in monthly savings (every years)
  * As well as increase in monthly savings with inflation and salary increase
- *
  */
 
 function App() {
@@ -23,7 +22,8 @@ function App() {
         getMonthlyCalculation(INITIAL_PARAMS)
     )
 
-    const onChange = useCallback((e) => {
+    // On change function for Parameters (only numbers)
+    const onChange = (e) => {
         let name = e.target.name
         let value = e.target.value ? Number.parseInt(e.target.value) : ""
 
@@ -32,23 +32,24 @@ function App() {
             [name]: value,
             isParamsUpdated: true,
         }))
-    }, [])
+    }
 
-    const onApplyParams = useCallback(async () => {
+    // Apply parameters and run calculation
+    const onApplyParams = () => {
         let result = getMonthlyCalculation({ ...params })
         setResult(result)
         setParams((prevState) => ({
             ...prevState,
             isParamsUpdated: false,
         }))
-    }, [params])
+    }
 
     return (
         <Box>
             <AppHeader />
 
             <Stack sx={{ px: 4, pt: 1 }} spacing={2}>
-                <Stack direction="row" spacing={4} sx={{ flexWrap: 'wrap' }}>
+                <Stack direction="row" spacing={4} sx={{ flexWrap: "wrap" }}>
                     <Parameters
                         params={params}
                         onApplyParams={onApplyParams}

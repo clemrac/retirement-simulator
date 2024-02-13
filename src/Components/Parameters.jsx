@@ -136,7 +136,7 @@ export default function Parameters({ params, onChange, onApplyParams }) {
                 />
             </Stack>
 
-            {/* Calculate button */}
+            {/* Calculation button */}
             <Button
                 variant="contained"
                 disabled={!params.isParamsUpdated}

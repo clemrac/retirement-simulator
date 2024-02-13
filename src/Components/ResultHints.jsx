@@ -3,7 +3,7 @@ import { formatMoneyAmount } from "../Helpers/functions"
 
 /* eslint-disable react/prop-types */
 export default function ResultHints({ data }) {
-    // No data
+    // If no data
     if (data.length === 0) return null
 
     let ageNoMoreCapital = null
@@ -12,8 +12,9 @@ export default function ResultHints({ data }) {
     // Loop through data to find hints
     data.forEach((month) => {
         // Age no more capital
-        if (month.capital <= 0 && ageNoMoreCapital === null)
+        if (month.capital <= 0 && ageNoMoreCapital === null) {
             ageNoMoreCapital = month.age
+        }
     })
 
     return (
